@@ -1,10 +1,13 @@
 services:
   api:
     build: ./backend
+    image: aymeenwe/medical-rag-api:latest
     ports:
       - "8000:8000"
+
   web:
     build: ./frontend
+    image: aymeenwe/medical-rag-web:latest
     ports:
       - "5173:80"
     depends_on:

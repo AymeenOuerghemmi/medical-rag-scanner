@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000'
+const API_BASE = import.meta.env.VITE_API_BASE ?? ''           
+const OWNER_NAME = import.meta.env.VITE_APP_OWNER ?? 'Aymen Ouerghemmi'
+const CONTACT_EMAIL = import.meta.env.VITE_APP_CONTACT_EMAIL ?? 'werghemiaymen@gmail.com'
 
 export default function App() {
   const [file, setFile] = useState(null)
   const [busy, setBusy] = useState(false)
   const [result, setResult] = useState(null)
   const [error, setError] = useState(null)
+  const year = new Date().getFullYear()
 
   const onChange = (e) => {
     setFile(e.target.files?.[0] ?? null)
@@ -22,8 +25,8 @@ export default function App() {
     try {
       const form = new FormData()
       form.append('file', file)
-      const r = await fetch(API_BASE + '/infer', { method: 'POST', body: form })
-      if (!r.ok) throw new Error('Request failed')
+      const r = await fetch(`${API_BASE}/infer`, { method: 'POST', body: form })
+      if (!r.ok) throw new Error(`Request failed (${r.status})`)
       const data = await r.json()
       setResult(data)
     } catch (e) {
@@ -77,9 +80,9 @@ export default function App() {
             </div>
           </div>
           <div className="card">
-            <h3>Grad‑CAM</h3>
+            <h3>Grad-CAM</h3>
             <p className="muted">Model attention overlay (rough localization).</p>
-            <img src={API_BASE + result.gradcam_url} style={{width:'100%', borderRadius:12}} alt="gradcam" />
+            <img src={`${API_BASE}${result.gradcam_url}`} style={{width:'100%', borderRadius:12}} alt="gradcam" />
           </div>
         </div>
       )}
@@ -103,6 +106,13 @@ export default function App() {
 
       <div className="footer">
         Built for demo/educational purposes only. Not medical advice.
+        <div style={{marginBottom:6}}>
+          © {year} {OWNER_NAME}. Tous droits réservés.
+        </div>
+        <div>
+          Problème ou question ? Contact :{' '}
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        </div>
       </div>
     </div>
   )
